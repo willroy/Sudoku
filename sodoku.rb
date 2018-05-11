@@ -102,33 +102,38 @@ class Calculations
         end
         return board_rows
     end
-    def block_checks(board_rows)
-          board_blocks = [[],[],[],[],[],[],[],[],[]]
-#         board_blocks_dup = board_rows.dup
-#         board_blocks = board_blocks_dup[0].each_slice(3).to_a
-#         b = nil
-#         print board_blocks
-#         puts ""
-#         b = board_blocks_dup[3].each_slice(3).to_a
-#         b.each {|x| board_blocks.push(x)}
-#         print board_blocks
-#         puts ""
-#         b = board_blocks_dup[6].each_slice(3).to_a
-#         b.each {|x| board_blocks.push(x)}
-#         print board_blocks
-#         puts ""
-        
-        for i in 0..2
+    def block_make(board_rows)
+        board_blocks = [[],[],[],[],[],[],[],[],[]]
+        for i in 0..8
+            num = 0
             board_rows[i].each do |x| 
-                print board_blocks
-        puts ""
-                board_blocks[0].push(x) if board_rows[i].find_index(x) <= 2
-                board_blocks[1].push(x) if board_rows[i].find_index(x) <= 5 && board_rows[i].find_index(x) >= 3
-                board_blocks[2].push(x) if board_rows[i].find_index(x) <= 8 && board_rows[i].find_index(x) >= 6
+                num += 1
+                board_blocks[0].push(x) if num <= 3 && i <= 2
+                board_blocks[1].push(x) if num >= 4 && num <= 6 && i <= 2
+                board_blocks[2].push(x) if num >= 7 && num <= 9 && i <= 2
+                board_blocks[3].push(x) if num <= 3 && i >= 3 && i <= 5
+                board_blocks[4].push(x) if num >= 4 && num <= 6 && i >= 3 && i <= 5
+                board_blocks[5].push(x) if num >= 7 && num <= 9 && i >= 3 && i <= 5
+                board_blocks[6].push(x) if num <= 3 && i >= 6 && i <= 8
+                board_blocks[7].push(x) if num >= 4 && num <= 6 && i >= 6 && i <= 8
+                board_blocks[8].push(x) if num >= 7 && num <= 9  && i >= 6 && i <= 8
             end
         end
-        print board_blocks
-        puts ""
+        return board_blocks
+    end
+    def block_revert
+        
+    end
+    def block_checks(board_rows)
+        board_blocks = block_make(board_rows)
+        for i in 0..8
+            zeros = 0
+            zeros = board_blocks[i].count(0)
+            if zeros == 1
+                miss_value = find_miss_num(board_blocks[i])
+                print miss_value
+            end
+        end
     end
     def find_miss_num(list)
         temp = list.dup
@@ -148,15 +153,6 @@ board_rows = [[0,0,2,4,8,0,3,7,6],
 [9,1,4,6,0,0,5,8,2],
 [6,2,5,0,4,8,0,3,7],
 [0,7,3,5,1,2,0,6,4]] 
-# board_blocks = [[0,0,2,7,3,9,4,6,8],
-# [4,8,0,2,0,6,3,7,1],
-# [3,7,6,8,4,1,2,9,5],
-# [3,8,0,5,0,0,2,4,6],
-# [1,2,4,7,6,3,8,9,5],
-# [0,5,9,4,0,8,7,1,3],
-# [9,1,4,6,2,5,0,7,3],
-# [6,0,0,0,4,8,5,1,2],
-# [5,8,2,0,3,7,0,6,4]] 
 
 
 display = Display_Board.new
