@@ -55,9 +55,14 @@ class Calculations
         if zeros == 0 
             return board_rows
         else
-#             board_rows = row_checks(board_rows)
-#             board_rows = column_checks(board_rows)
-            board_rows = block_checks(board_rows)
+            for i in 0..1
+                print board_rows
+                puts ""
+                board_rows = row_checks(board_rows)
+                board_rows = column_checks(board_rows)
+                board_rows = block_checks(board_rows)
+                print board_rows
+            end
         end
     end
     def inp_out_tracker(board_rows)
@@ -67,10 +72,18 @@ class Calculations
     end
     def row_checks(board_rows)
         for i in 0..8
+#             print "i: " + i.to_s
             zeros = 0
+#             puts ""
+#             print "board_rows[0]: " + board_rows[0].to_s
+#             puts ""
+#             print "board_rows[i]: " + board_rows[i].to_s
+#             puts ""
             zeros = board_rows[i].count(0)
             if zeros == 1
                 miss_value = find_miss_num(board_rows[i])
+#                 print miss_value
+#                 puts ""
                 num = 0
                 for x in board_rows[i]
                     num += 1
@@ -119,6 +132,12 @@ class Calculations
                 board_blocks[8].push(x) if num >= 7 && num <= 9  && i >= 6 && i <= 8
             end
         end
+        #first three values of the first three is the first row
+        #second three values of the first three is the second row
+        #third three values of the first three is the third row
+        #first three values of the first three is the fourth row
+        #second three values of the first three is the fifth row
+        #third three values of the first three is the sixth row
         return board_blocks
     end
     def block_revert
@@ -131,9 +150,9 @@ class Calculations
             zeros = board_blocks[i].count(0)
             if zeros == 1
                 miss_value = find_miss_num(board_blocks[i])
-                print miss_value
             end
         end
+        return board_rows
     end
     def find_miss_num(list)
         temp = list.dup
