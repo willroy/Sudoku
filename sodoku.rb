@@ -138,15 +138,21 @@ class Calculations
         return board_blocks
     end
     def block_find_location(board_blocks, block, in_block)
-        location = [0, 0]
-        grid_range = [0, 0]
-        grid_range = [0, 1, 2] if block >= 0 && block <= 2
-        grid_range = [3, 4, 5] if block >= 3 && block <= 5
-        grid_range = [6, 7, 8] if block >= 6 && block <= 8
-        in_block_row = 1 if in_block >= 0 && in_block <= 2
-        in_block_row = 2 if in_block >= 3 && in_block <= 5
-        in_block_row = 3 if in_block >= 6 && in_block <= 8
-        return grid_range[in_block_row-1]
+        grid_row_range = [0, 1, 2] if block >= 0 && block <= 2
+        grid_row_range = [3, 4, 5] if block >= 3 && block <= 5
+        grid_row_range = [6, 7, 8] if block >= 6 && block <= 8
+        in_block_row = 0 if in_block >= 0 && in_block <= 2
+        in_block_row = 1 if in_block >= 3 && in_block <= 5
+        in_block_row = 2 if in_block >= 6 && in_block <= 8
+        
+        grid_col_range = [0, 1, 2] if block == 0 || block == 3 || block == 6
+        grid_col_range = [3, 4, 5] if block == 1 || block == 4 || block == 7
+        grid_col_range = [6, 7, 8] if block == 2 || block == 5 || block == 8
+        in_block_col = 0 if in_block == 0 || block == 3 || block == 6
+        in_block_col = 1 if in_block == 1 || block == 4 || block == 7
+        in_block_col = 2 if in_block == 2 || block == 5 || block == 8
+        
+        return grid_row_range[in_block_row], grid_col_range[in_block_col]
     end
     def block_checks(board_rows)
         print "\nStarted block_checks"
@@ -163,15 +169,10 @@ class Calculations
             if zeros == 1
                 board_blocks[i].find_index(0)
                 miss_value = find_miss_num(board_blocks[i])
-                row_index = block_find_location(board_blocks, i, board_blocks[i].find_index(0))
+                row_index, col_index = block_find_location(board_blocks, i, board_blocks[i].find_index(0))
                 print "miss_value: " + miss_value.to_s.yellow
                 puts ""
-                for i in board_rows[row_index]
-                    if i == 0
-                       board_rows[row_index][board_rows[row_index].find_index(i)] = miss_value 
-                       break
-                    end
-                end
+                board_rows[row_index][col_index] = miss_value 
             end
         end
         return board_rows
