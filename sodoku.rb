@@ -55,13 +55,10 @@ class Calculations
         if zeros == 0 
             return board_rows
         else
-            for i in 0..1
-                print board_rows
-                puts ""
+            for i in 0..10
                 board_rows = row_checks(board_rows)
                 board_rows = column_checks(board_rows)
                 board_rows = block_checks(board_rows)
-                print board_rows
             end
         end
     end
@@ -72,18 +69,10 @@ class Calculations
     end
     def row_checks(board_rows)
         for i in 0..8
-#             print "i: " + i.to_s
             zeros = 0
-#             puts ""
-#             print "board_rows[0]: " + board_rows[0].to_s
-#             puts ""
-#             print "board_rows[i]: " + board_rows[i].to_s
-#             puts ""
             zeros = board_rows[i].count(0)
             if zeros == 1
                 miss_value = find_miss_num(board_rows[i])
-#                 print miss_value
-#                 puts ""
                 num = 0
                 for x in board_rows[i]
                     num += 1
@@ -132,24 +121,48 @@ class Calculations
                 board_blocks[8].push(x) if num >= 7 && num <= 9  && i >= 6 && i <= 8
             end
         end
-        #first three values of the first three is the first row
-        #second three values of the first three is the second row
-        #third three values of the first three is the third row
-        #first three values of the first three is the fourth row
-        #second three values of the first three is the fifth row
-        #third three values of the first three is the sixth row
         return board_blocks
     end
-    def block_revert
-        
+    def block_find_location(board_blocks, row, col)
+        row_index = 0
+        if board_blocks.find_index(row) >= 0 && < 3 #Then it is in the 1st to 3rd row
+            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 1st row
+                row_index = 0
+            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 2nd row
+                row_index = 1
+            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 3rd row
+                row_index = 2
+            end
+        elsif board_blocks.find_index(row) >= 3 && < 6 #Then it is in the 4th to 6th row
+            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 4th row
+                row_index = 3
+            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 5th row
+                row_index = 4
+            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 6th row
+                row_index = 5
+            end
+        elsif board_blocks.find_index(row) >= 6 && < 9 #Then it is in the 7th to 9th row
+            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 7th row
+                row_index = 6 
+            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 8th row
+                row_index = 7
+            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 9th row
+                row_index = 8
+            end
+        end
+        block = board_blocks[row].find_index
     end
     def block_checks(board_rows)
+        row_index = nil
+        col_index = nil
         board_blocks = block_make(board_rows)
         for i in 0..8
             zeros = 0
             zeros = board_blocks[i].count(0)
             if zeros == 1
+                board_blocks[i].find_index(0)
                 miss_value = find_miss_num(board_blocks[i])
+                row_index, col_index = block_find_location(board_blocks, i, )
             end
         end
         return board_rows
