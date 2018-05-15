@@ -52,27 +52,33 @@ class Calculations
     def to_check_tracker(board_rows)
         zeros = 0
         board_rows.each {|i| zeros += i.count(0)} 
-        if zeros == 0 
-            return board_rows
-        else
-            for i in 0..10
-                board_rows = row_checks(board_rows)
-                board_rows = column_checks(board_rows)
-                board_rows = block_checks(board_rows)
-            end
+        for i in 0..0
+            board_rows = row_checks(board_rows)
+            board_rows = column_checks(board_rows)
+            board_rows = block_checks(board_rows)
         end
+        return board_rows
     end
     def inp_out_tracker(board_rows)
-#         board_rows =
-        to_check_tracker(board_rows) #<< put on last line
+        board_rows = to_check_tracker(board_rows) #<< put on last line
         return board_rows
     end
     def row_checks(board_rows)
+        print "\nStarted row_checks"
+        puts ""
         for i in 0..8
             zeros = 0
             zeros = board_rows[i].count(0)
+            
+            print "i: " + i.to_s.green + "\n"
+            print "zeros: " + zeros.to_s.blue
+            puts ""
             if zeros == 1
                 miss_value = find_miss_num(board_rows[i])
+                
+                
+                print "miss_value: " + miss_value.to_s.yellow
+                puts ""
                 num = 0
                 for x in board_rows[i]
                     num += 1
@@ -85,14 +91,22 @@ class Calculations
         return board_rows
     end
     def column_checks(board_rows)
+        print "\nStarted column_checks"
+        puts ""
         for i in 0..8
             column_to_check = []
             for x in board_rows
                 column_to_check.push(x[i].to_i)
             end 
             amount = column_to_check.count(0)
+            
+            print "i: " + i.to_s.green + "\n"
+            print "zeros: " + amount.to_s.blue
+            puts ""
             if amount == 1
                 miss_value = find_miss_num(column_to_check)
+                print "miss_value: " + miss_value.to_s.yellow
+                puts ""
                 num = 0
                 for x in board_rows
                     num += 1
@@ -123,46 +137,41 @@ class Calculations
         end
         return board_blocks
     end
-    def block_find_location(board_blocks, row, col)
-        row_index = 0
-        if board_blocks.find_index(row) >= 0 && < 3 #Then it is in the 1st to 3rd row
-            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 1st row
-                row_index = 0
-            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 2nd row
-                row_index = 1
-            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 3rd row
-                row_index = 2
-            end
-        elsif board_blocks.find_index(row) >= 3 && < 6 #Then it is in the 4th to 6th row
-            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 4th row
-                row_index = 3
-            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 5th row
-                row_index = 4
-            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 6th row
-                row_index = 5
-            end
-        elsif board_blocks.find_index(row) >= 6 && < 9 #Then it is in the 7th to 9th row
-            if board_blocks[row].find_index(col) >= 0 && < 3 #Then it is in the 7th row
-                row_index = 6 
-            elsif board_blocks[row].find_index(col) >= 3 && < 6 #Then it is in the 8th row
-                row_index = 7
-            elsif board_blocks[row].find_index(col) >= 6 && < 9 #Then it is in the 9th row
-                row_index = 8
-            end
-        end
-        block = board_blocks[row].find_index
+    def block_find_location(board_blocks, block, in_block)
+        location = [0, 0]
+        grid_range = [0, 0]
+        grid_range = [0, 1, 2] if block >= 0 && block <= 2
+        grid_range = [3, 4, 5] if block >= 3 && block <= 5
+        grid_range = [6, 7, 8] if block >= 6 && block <= 8
+        in_block_row = 1 if in_block >= 0 && in_block <= 2
+        in_block_row = 2 if in_block >= 3 && in_block <= 5
+        in_block_row = 3 if in_block >= 6 && in_block <= 8
+        return grid_range[in_block_row-1]
     end
     def block_checks(board_rows)
+        print "\nStarted block_checks"
+        puts ""
         row_index = nil
         col_index = nil
         board_blocks = block_make(board_rows)
         for i in 0..8
             zeros = 0
             zeros = board_blocks[i].count(0)
+            print "i: " + i.to_s.green + "\n"
+            print "zeros: " + zeros.to_s.blue
+            puts ""
             if zeros == 1
                 board_blocks[i].find_index(0)
                 miss_value = find_miss_num(board_blocks[i])
-                row_index, col_index = block_find_location(board_blocks, i, )
+                row_index = block_find_location(board_blocks, i, board_blocks[i].find_index(0))
+                print "miss_value: " + miss_value.to_s.yellow
+                puts ""
+                for i in board_rows[row_index]
+                    if i == 0
+                       board_rows[row_index][board_rows[row_index].find_index(i)] = miss_value 
+                       break
+                    end
+                end
             end
         end
         return board_rows
@@ -185,6 +194,16 @@ board_rows = [[0,0,2,4,8,0,3,7,6],
 [9,1,4,6,0,0,5,8,2],
 [6,2,5,0,4,8,0,3,7],
 [0,7,3,5,1,2,0,6,4]] 
+
+# board_rows = [[1,0,2,4,8,0,0,7,6],
+# [7,3,9,2,5,6,8,4,1],
+# [4,6,8,3,7,1,2,9,5],
+# [3,8,7,1,2,4,6,0,9],
+# [5,0,1,7,6,3,4,2,8],
+# [2,4,6,8,9,0,7,1,3],
+# [9,1,4,6,3,7,5,8,2],
+# [6,2,5,9,4,8,0,3,7],
+# [8,0,3,0,1,2,9,6,4]] 
 
 
 display = Display_Board.new
