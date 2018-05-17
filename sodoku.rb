@@ -12,15 +12,15 @@ class Display_Board
                 puts ""
             end
             count = 0
-            for y in i
+            for x in i
                 count += 1
                 if count == 1
                     print "|"
                 end
-                if y == @num_hl
-                    print y.to_s.red
+                if x == @num_hl
+                    print x.to_s.red
                 else
-                    print y
+                    print x
                 end 
                 if count % 3 == 0 
                     print "|"
@@ -157,7 +157,10 @@ class Simple_calcs
 end
 
 class Array
-    def select_indice &p; map.with_index{|x, i| i if p.call(x)}.compact end
+    #finds the index of multiple elements in an array (if they fit a criteria)
+    def select_indice &p; map.with_index{|x, i| i if p.call(x)}.compact; end
+    #swaps two elements in an array
+    def swap!(a, b) self[a], self[b] = self[b], self[a]; self; end
 end
 
 class Cross_meet
@@ -169,19 +172,50 @@ class Cross_meet
             zeros = 0
             zeros = board_rows[i].count(0)
             if zeros == 2
-                miss_value = find_miss_nums(board_rows[i])
-                cross_cols(i, board_rows, miss_value)
+                miss_value, col = find_miss_nums(board_rows[i])
+                cross_cols(i, board_rows, col, miss_value)
             end
         end
     end
-    def cross_cols(row, board_rows, miss_value)
-        for i in miss_value
-            col = []
-            for i in board_rows
-                for x in i
-                    
+    def cross_cols(row, board_rows, col, miss_value)
+        column_to_check = []
+        for i in board_rows
+            column_to_check.push(i[col[0]])
+        end
+        clash = false
+        for i in column_to_check
+            for x in miss_value
+                if i == x
+                    clash = true
+                    print "Swap?: " + (i == miss_value[0]).to_s
+                    puts ""
+                    miss_value.swap!(0,1) if i == miss_value[0]
                 end
             end
+        end
+        for i in board_rows
+            column_to_check.push(i[col[1]])
+        end
+        for i in column_to_check
+            for x in miss_value
+                if i == x
+                    clash = true
+                    print "Swap?: " + (i == miss_value[0]).to_s
+                    puts ""
+                    miss_value.swap!(0,1) if i == miss_value[1]
+                end
+            end
+        end
+        if clash == true
+            print "Clash!"
+            num = 0
+            for i in board_rows[row]
+                if i == 0
+                    board_rows[row][board_rows[row].find_index(i)] = miss_value[num]
+                    num += 1
+                end
+            end
+            return board_rows
         end
     end
     def find_miss_nums(list)
@@ -189,17 +223,17 @@ class Cross_meet
         cols = []
         cols = temp.select_indice{|x| x == 0}
         test_ag = (1..9).to_a
-         print "temp: " + temp.to_s
-        puts ""
+#          print "temp: " + temp.to_s
+#         puts ""
         num = 0
         temp.delete(0)
         miss_value = test_ag - temp
-        print miss_value
-        puts ""
-        
-        print cols
-        puts ""
-        return miss_value
+#         print miss_value
+#         puts ""
+#         
+#         print cols
+#         puts ""
+        return miss_value, cols
     end
 end
 
@@ -222,9 +256,8 @@ display.num_highlight()
 n()
 display.display_board(board_rows)
 board_rows = first_calcs.main(board_rows)
-display.display_board(board_rows)
-n()
 second_calcs.main(board_rows)
+board_rows = first_calcs.main(board_rows)
 n()
 display.display_board(board_rows)
 n()
