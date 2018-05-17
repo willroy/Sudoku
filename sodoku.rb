@@ -56,7 +56,7 @@ class Simple_calcs
         end
         return board_rows
     end
-    def inp_out_tracker(board_rows)
+    def main(board_rows)
         board_rows = to_check_tracker(board_rows) 
         return board_rows
     end
@@ -156,6 +156,53 @@ class Simple_calcs
     end
 end
 
+class Array
+    def select_indice &p; map.with_index{|x, i| i if p.call(x)}.compact end
+end
+
+class Cross_meet
+    def main(board_rows)
+        row_checks(board_rows)
+    end
+    def row_checks(board_rows) 
+        for i in 0..8
+            zeros = 0
+            zeros = board_rows[i].count(0)
+            if zeros == 2
+                miss_value = find_miss_nums(board_rows[i])
+                cross_cols(i, board_rows, miss_value)
+            end
+        end
+    end
+    def cross_cols(row, board_rows, miss_value)
+        for i in miss_value
+            col = []
+            for i in board_rows
+                for x in i
+                    
+                end
+            end
+        end
+    end
+    def find_miss_nums(list)
+        temp = list.dup
+        cols = []
+        cols = temp.select_indice{|x| x == 0}
+        test_ag = (1..9).to_a
+         print "temp: " + temp.to_s
+        puts ""
+        num = 0
+        temp.delete(0)
+        miss_value = test_ag - temp
+        print miss_value
+        puts ""
+        
+        print cols
+        puts ""
+        return miss_value
+    end
+end
+
 def n; puts "\n"; end
 
 board_rows = [[9,5,4,2,8,6,3,1,0],
@@ -169,10 +216,15 @@ board_rows = [[9,5,4,2,8,6,3,1,0],
               [0,0,6,8,0,5,9,7,1]]
 
 display = Display_Board.new
-calculate = Simple_calcs.new
+first_calcs = Simple_calcs.new
+second_calcs = Cross_meet.new
 display.num_highlight()
 n()
 display.display_board(board_rows)
-board_rows = calculate.inp_out_tracker(board_rows)
+board_rows = first_calcs.main(board_rows)
+display.display_board(board_rows)
+n()
+second_calcs.main(board_rows)
+n()
 display.display_board(board_rows)
 n()
